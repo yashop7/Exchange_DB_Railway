@@ -5,3 +5,4 @@
     - Ticker information. There should be a `ticker` table that stores the current price
     - Trades information. User should be able to see the recent set of trades
 # Exchange_DB_Railway
+# Exchange_DB_Railway
