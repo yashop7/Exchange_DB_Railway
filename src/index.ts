@@ -2,6 +2,8 @@ import { Client } from 'pg';
 import { createClient } from 'redis';  
 import { DbMessage } from './types';
 import { dbUrl, redisUrl } from './config';
+import * as cron from 'node-cron';
+import express from 'express';
 
 const pgClient = new Client({
     connectionString: dbUrl, // Railway's full connection URL
@@ -54,3 +56,21 @@ async function main() {
 }
 
 main();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    console.log("Health check - server is alive from the HTTP");
+    res.status(200).json({ status: 'healthy' });
+});
+
+// Cron job to keep the server alive
+cron.schedule('*/12 * * * *', () => {
+    console.log('Health check - server is alive');
+});
+
+app.listen(port, () => {
+    console.log(`Health check server running on port ${port}`);
+});
