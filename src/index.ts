@@ -2,12 +2,9 @@ import { Client } from 'pg';
 import { createClient } from 'redis';  
 import { DbMessage } from './types';
 import { dbUrl, redisUrl } from './config';
-import * as cron from 'node-cron';
-import express from 'express';
 
 const pgClient = new Client({
     connectionString: dbUrl, // Railway's full connection URL
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false, // Required for Railway
   });
   
   pgClient
@@ -17,16 +14,16 @@ const pgClient = new Client({
   
 async function main() {
     const redisClient = createClient({
-        url: redisUrl
+        url : redisUrl
     });
     await redisClient.connect();
-    console.log("Connected to Redis");
+    console.log("connected to redis");
 
     while (true) {
-        // Use a blocking pop to wait for a message
-        const res = await redisClient.blPop("db_processor", 0);
-        if (res && res.element) {
-            const response = res.element;
+        const response = await redisClient.rPop("db_processor" as string)
+        if (!response) {
+
+        }  else {
             const data: DbMessage = JSON.parse(response);
             if (data.type === "TRADE_ADDED") {
                 try {
@@ -56,21 +53,3 @@ async function main() {
 }
 
 main();
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-    console.log("Health check - server is alive from the HTTP");
-    res.status(200).json({ status: 'healthy' });
-});
-
-// Cron job to keep the server alive
-cron.schedule('*/12 * * * *', () => {
-    console.log('Health check - server is alive');
-});
-
-app.listen(port, () => {
-    console.log(`Health check server running on port ${port}`);
-});
