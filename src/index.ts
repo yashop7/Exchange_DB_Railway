@@ -17,16 +17,16 @@ const pgClient = new Client({
   
 async function main() {
     const redisClient = createClient({
-        url : redisUrl
+        url: redisUrl
     });
     await redisClient.connect();
-    console.log("connected to redis");
+    console.log("Connected to Redis");
 
     while (true) {
-        const response = await redisClient.rPop("db_processor" as string)
-        if (!response) {
-
-        }  else {
+        // Use a blocking pop to wait for a message
+        const res = await redisClient.blPop("db_processor", 0);
+        if (res && res.element) {
+            const response = res.element;
             const data: DbMessage = JSON.parse(response);
             if (data.type === "TRADE_ADDED") {
                 try {
