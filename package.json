@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "npm run build && npm run refresh:views && WITH_SNAPSHOT=true node dist/index.js",
-    "dev": "npm run build && npm run refresh:views && WITH_SNAPSHOT=true node dist/index.js",
+    "start": "npm run build && npm run refresh:views && node dist/index.js",
+    "dev": "npm run build && npm run refresh:views && node dist/index.js",
     "seed:db": "npm run build && node dist/seed-db.js",
     "refresh:views": "npm run build && node dist/cron.js"
   },
