@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Health check endpoint
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
   console.log("Health check - server is alive from the HTTP");
   res.status(200).json({ status: "healthy" });
 });
