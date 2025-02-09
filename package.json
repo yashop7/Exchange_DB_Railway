@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "concurrently \"npm run seed:db\" \"node dist/index.js\" \"node dist/cron.js\"",
-    "dev": "npm run build && concurrently \"node dist/index.js\" \"node dist/cron.js\"",
+    "start": "npm run seed:db && concurrently \"node dist/index.js\" \"node dist/cron.js\"",
+    "dev": "npm run build && node dist/index.js && npm run refresh:views ",
     "seed:db": "npm run build && node dist/seed-db.js",
     "refresh:views": "node dist/cron.js"
   },
@@ -17,6 +17,7 @@
     "@types/express": "^5.0.0",
     "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.11.10",
+    "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "node-cron": "^3.0.3",
